@@ -2,20 +2,27 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
+
+	link "github.com/leoopd/html-link_parser/util"
+	build "github.com/leoopd/sitemap-builder/util"
 )
 
-func main() {
-	resp, err := http.Get("https://www.google.com")
-	if err != nil {
-		log.Fatal(err)
+func check(e error) {
+	if e != nil {
+		log.Fatal(e)
 	}
-	resp2, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+}
 
-	fmt.Printf("%s", resp2)
+func main() {
+
+	var list link.LinkedList
+	node, err := link.HtmlParser(build.GrabHtml("https://google.com"))
+	check(err)
+
+	link.TagParser(node, &list)
+
+	for i := list.Head; i != nil; i = i.Next {
+		fmt.Println(i.Link)
+	}
 }

@@ -13,10 +13,9 @@ func check(e error) {
 }
 
 func GrabHtml(url string) string {
-	resp, err := http.Get("www.google.com")
+	resp, err := http.Get(url)
 	check(err)
 
 	text, err := ioutil.ReadAll(resp.Body)
 	return string(text)
 }
-

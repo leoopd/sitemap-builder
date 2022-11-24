@@ -1,0 +1,7 @@
+# github.com/leoopd/html-link_parser v0.2.6
+## explicit; go 1.19
+github.com/leoopd/html-link_parser/util
+# golang.org/x/net v0.2.0
+## explicit; go 1.17
+golang.org/x/net/html
+golang.org/x/net/html/atom
