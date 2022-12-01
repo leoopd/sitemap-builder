@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	link "github.com/leoopd/html-link_parser/util"
 	build "github.com/leoopd/sitemap-builder/util"
 )
 
@@ -15,17 +16,34 @@ func check(e error) {
 
 func main() {
 	var url string = "https://www.calhoun.io"
+	var list link.LinkedList
+	found := make(map[string]bool)
+	visited := make(map[string]bool)
 
-	links, _ := build.GetLinks(url)
+	html, err := build.GrabHtml(url)
+	check(err)
+
+	node, err := link.HtmlParser(html)
+	check(err)
+
+	link.TagParser(node, &list)
+
+	links := build.GetLinks(url, list, found)
 
 	for i := 0; i < len(links); i++ {
-		fmt.Printf("i: %d, link: %s\n", i, links[i])
-	}
-	fmt.Println("\n##########\n")
-	stringSlice := build.FollowLinks(build.GetLinks(url))
 
-	for i := 0; i < len(links); i++ {
-		fmt.Printf("i: %d, link: %s\n", i, stringSlice[i])
-	}
+		if !visited[links[i]] {
+			visited[links[i]] = true
+			html, err := build.GrabHtml(links[i])
+			check(err)
 
+			node, err := link.HtmlParser(html)
+			check(err)
+
+			link.TagParser(node, &list)
+
+			links = append(links, build.GetLinks(links[i], list, found)...)
+		}
+	}
+	fmt.Println(links)
 }
