@@ -16,7 +16,7 @@ func check(e error) {
 func main() {
 	var url string = "https://www.calhoun.io"
 
-	links := build.GetLinks(url)
+	links, _ := build.GetLinks(url)
 
 	for i := 0; i < len(links); i++ {
 		fmt.Printf("i: %d, link: %s\n", i, links[i])

@@ -1,6 +1,7 @@
 package sitemapBuilder
 
 import (
+	"fmt"
 	"strings"
 
 	link "github.com/leoopd/html-link_parser/util"
@@ -8,7 +9,7 @@ import (
 
 // Creates a string slice that contains all the links found on the given url and
 // a map to keep track of already found links.
-func GetLinks(url string) []string {
+func GetLinks(url string) ([]string, map[string]bool) {
 	var list link.LinkedList
 	found := make(map[string]bool)
 	var links []string
@@ -29,20 +30,29 @@ func GetLinks(url string) []string {
 			slice := strings.TrimLeft(i.Link, "htps:/")
 
 			if tmp := strings.Split(slice, "/"); tmp[0] == url2 {
+				found[slice] = true
 				links = append(links, "https://"+slice)
 			}
 		}
 	}
-	return links
+	return links, found
 }
 
-func FollowLinks(links []string) []string {
+func FollowLinks(links []string, found map[string]bool) []string {
+	fmt.Println(found)
 	visited := make(map[string]bool)
 
 	for i := 0; i < len(links); i++ {
 		if !visited[links[i]] {
 			visited[links[i]] = true
-			links = append(links, GetLinks(links[i])...)
+			newLinks, found := GetLinks(links[i])
+			for j := 0; j < len(newLinks); j++ {
+
+				if !found[newLinks[j]] {
+					found[newLinks[j]] = true
+					links = append(links, newLinks[j])
+				}
+			}
 		}
 	}
 	return links
