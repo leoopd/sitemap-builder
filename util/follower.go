@@ -24,3 +24,11 @@ func FollowLinks(links []string, found map[string]bool, visited map[string]bool,
 	}
 	return links
 }
+
+func checkingFollower (url string) bool {
+
+}
+
+func addingFollower (url string) {
+
+}
